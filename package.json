@@ -1,0 +1,32 @@
+{
+  "name": "learnnect-otp-api",
+  "version": "1.0.0",
+  "description": "Backend API for Learnnect OTP Email Service using Resend",
+  "main": "backend-otp-api.js",
+  "scripts": {
+    "start": "node backend-otp-api.js",
+    "dev": "nodemon backend-otp-api.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "learnnect",
+    "otp",
+    "email",
+    "resend",
+    "api"
+  ],
+  "author": "Learnnect Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "resend": "^3.2.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
