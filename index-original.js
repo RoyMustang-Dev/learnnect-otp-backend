@@ -9,78 +9,18 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Enhanced logging for debugging
-console.log('🚀 Starting Learnnect OTP Backend...');
-console.log(`📍 Port: ${port}`);
-console.log(`📧 Resend API Key configured: ${process.env.RESEND_API_KEY ? 'Yes' : 'No'}`);
-console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-
-// Initialize Resend with error handling
-let resend;
-try {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('⚠️  RESEND_API_KEY not found in environment variables');
-    console.warn('⚠️  Email functionality will be limited');
-  }
-  resend = new Resend(process.env.RESEND_API_KEY);
-  console.log('✅ Resend initialized successfully');
-} catch (error) {
-  console.error('❌ Failed to initialize Resend:', error.message);
-  process.exit(1);
-}
-
-// Enhanced CORS configuration
-const corsOptions = {
-  origin: [
-    'https://learnnect.com',
-    'https://www.learnnect.com',
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://learnnect-platform.netlify.app'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-};
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Middleware
-app.use(cors(corsOptions));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-// Request logging middleware
-app.use((req, res, next) => {
-  console.log(`📝 ${new Date().toISOString()} - ${req.method} ${req.path}`);
-  next();
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('❌ Unhandled error:', err);
-  res.status(500).json({
-    success: false,
-    message: 'Internal server error',
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong'
-  });
-});
+app.use(cors({
+  origin: ['https://learnnect.com', 'http://localhost:5173', 'https://learnnect-platform.netlify.app'],
+  credentials: true
+}));
+app.use(express.json());
 
 // In-memory OTP storage (use Redis or database in production)
 const otpStorage = new Map();
-
-// Cleanup expired OTPs every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  let cleanedCount = 0;
-  for (const [key, data] of otpStorage.entries()) {
-    if (now > data.expiryTime) {
-      otpStorage.delete(key);
-      cleanedCount++;
-    }
-  }
-  if (cleanedCount > 0) {
-    console.log(`🧹 Cleaned up ${cleanedCount} expired OTPs`);
-  }
-}, 5 * 60 * 1000);
 
 // Generate 6-digit OTP
 function generateOTP() {
@@ -158,33 +98,6 @@ function getOTPEmailTemplate(otp, purpose = 'verification') {
   `;
 }
 
-// Health check endpoint
-app.get('/', (req, res) => {
-  res.json({
-    status: 'OK',
-    service: 'Learnnect OTP Backend',
-    version: '1.0.0',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
-});
-
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    service: 'Learnnect OTP Backend',
-    version: '1.0.0',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    env: {
-      nodeVersion: process.version,
-      platform: process.platform,
-      resendConfigured: !!process.env.RESEND_API_KEY
-    }
-  });
-});
-
 // API Routes
 
 // Send OTP Email
@@ -192,31 +105,10 @@ app.post('/api/send-otp', async (req, res) => {
   try {
     const { email, purpose = 'verification' } = req.body;
 
-    console.log(`📧 OTP request for: ${email}, purpose: ${purpose}`);
-
     if (!email) {
       return res.status(400).json({
         success: false,
         message: 'Email is required'
-      });
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid email format'
-      });
-    }
-
-    // Check if Resend is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.log(`🔧 Development mode: OTP for ${email} would be sent`);
-      return res.json({
-        success: true,
-        message: 'OTP sent successfully (development mode)',
-        development: true
       });
     }
 
@@ -240,7 +132,7 @@ app.post('/api/send-otp', async (req, res) => {
       html: getOTPEmailTemplate(otp, purpose)
     });
 
-    console.log('✅ OTP email sent successfully:', emailResult.data?.id);
+    console.log('✅ OTP email sent successfully:', emailResult);
 
     res.json({
       success: true,
@@ -262,8 +154,6 @@ app.post('/api/send-otp', async (req, res) => {
 app.post('/api/verify-otp', async (req, res) => {
   try {
     const { email, otp } = req.body;
-
-    console.log(`🔍 OTP verification for: ${email}`);
 
     if (!email || !otp) {
       return res.status(400).json({
@@ -311,7 +201,6 @@ app.post('/api/verify-otp', async (req, res) => {
 
     // OTP verified successfully
     otpStorage.delete(email);
-    console.log('✅ OTP verified successfully for:', email);
 
     res.json({
       success: true,
@@ -333,25 +222,6 @@ app.post('/api/send-confirmation', async (req, res) => {
   try {
     const { type, to, data } = req.body;
 
-    console.log(`📧 Confirmation email request: ${type} to ${to}`);
-
-    if (!type || !to) {
-      return res.status(400).json({
-        success: false,
-        message: 'Type and recipient email are required'
-      });
-    }
-
-    // Check if Resend is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.log(`🔧 Development mode: ${type} confirmation email for ${to} would be sent`);
-      return res.json({
-        success: true,
-        message: 'Confirmation email sent successfully (development mode)',
-        development: true
-      });
-    }
-
     let subject, html;
 
     switch (type) {
@@ -360,7 +230,7 @@ app.post('/api/send-confirmation', async (req, res) => {
         html = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: white; padding: 40px; border-radius: 20px;">
             <h1 style="color: #00ffff; text-align: center;">Welcome to Learnnect! 🎉</h1>
-            <p>Hi ${data?.name || 'there'},</p>
+            <p>Hi ${data.name},</p>
             <p>Welcome to the Learnnect community! Your account has been successfully created.</p>
             <p>Start your learning journey today and unlock your potential!</p>
             <div style="text-align: center; margin: 30px 0;">
@@ -377,9 +247,9 @@ app.post('/api/send-confirmation', async (req, res) => {
         html = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: white; padding: 40px; border-radius: 20px;">
             <h1 style="color: #00ffff; text-align: center;">Thank You for Reaching Out! 📧</h1>
-            <p>Hi ${data?.name || 'there'},</p>
+            <p>Hi ${data.name},</p>
             <p>We've received your message and will get back to you within 24 hours.</p>
-            ${data?.message ? `<p><strong>Your Message:</strong> ${data.message}</p>` : ''}
+            <p><strong>Your Message:</strong> ${data.message}</p>
           </div>
         `;
         break;
@@ -389,8 +259,8 @@ app.post('/api/send-confirmation', async (req, res) => {
         html = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: white; padding: 40px; border-radius: 20px;">
             <h1 style="color: #00ffff; text-align: center;">Course Enquiry Received! 📚</h1>
-            <p>Hi ${data?.name || 'there'},</p>
-            <p>Thank you for your interest in ${data?.courseInterest ? `<strong>${data.courseInterest}</strong>` : 'our courses'}!</p>
+            <p>Hi ${data.name},</p>
+            <p>Thank you for your interest in <strong>${data.courseInterest}</strong>!</p>
             <p>Our team will contact you soon with detailed information.</p>
           </div>
         `;
@@ -401,7 +271,7 @@ app.post('/api/send-confirmation', async (req, res) => {
         html = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: white; padding: 40px; border-radius: 20px;">
             <h1 style="color: #00ffff; text-align: center;">Newsletter Subscription Confirmed! 📰</h1>
-            <p>Hi ${data?.name || 'there'},</p>
+            <p>Hi ${data.name},</p>
             <p>You're now subscribed to our newsletter! Get ready for:</p>
             <ul>
               <li>Latest course updates</li>
@@ -427,7 +297,7 @@ app.post('/api/send-confirmation', async (req, res) => {
       html
     });
 
-    console.log('✅ Confirmation email sent successfully:', emailResult.data?.id);
+    console.log('✅ Confirmation email sent successfully:', emailResult);
 
     res.json({
       success: true,
@@ -445,23 +315,15 @@ app.post('/api/send-confirmation', async (req, res) => {
   }
 });
 
-// Global error handlers
-process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught Exception:', error);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // Start server
-app.listen(port, '0.0.0.0', () => {
-  console.log(`🚀 Learnnect OTP Backend running on port ${port}`);
+app.listen(port, () => {
+  console.log(`🚀 OTP API Server running on port ${port}`);
   console.log(`📧 Resend API configured: ${process.env.RESEND_API_KEY ? 'Yes' : 'No'}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`⏰ Server started at: ${new Date().toISOString()}`);
 });
 
 module.exports = app;
