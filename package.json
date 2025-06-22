@@ -2,10 +2,10 @@
   "name": "learnnect-otp-api",
   "version": "1.0.0",
   "description": "Backend API for Learnnect OTP Email Service using Resend",
-  "main": "backend-otp-api.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node backend-otp-api.js",
-    "dev": "nodemon backend-otp-api.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
