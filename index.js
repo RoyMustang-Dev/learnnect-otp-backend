@@ -1,5 +1,5 @@
+// Professional Email System for Learnnect - World-Class Templates
 // Backend API for OTP Email Service using Resend
-// Deploy this to Render, Vercel, or any Node.js hosting service
 
 const express = require('express');
 const cors = require('cors');
@@ -10,7 +10,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // Enhanced logging for debugging
-console.log('🚀 Starting Learnnect OTP Backend...');
+console.log('🚀 Starting Learnnect Professional Email Backend...');
 console.log(`📍 Port: ${port}`);
 console.log(`📧 Resend API Key configured: ${process.env.RESEND_API_KEY ? 'Yes' : 'No'}`);
 console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -87,35 +87,121 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Professional Email Footer Template
+// Professional Email Base Template with consistent branding
+function getEmailBaseTemplate(content, title = 'Learnnect') {
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <title>${title}</title>
+      <!--[if mso]>
+      <noscript>
+        <xml>
+          <o:OfficeDocumentSettings>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+          </o:OfficeDocumentSettings>
+        </xml>
+      </noscript>
+      <![endif]-->
+      <style>
+        /* Reset styles */
+        body, table, td, p, a, li, blockquote { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+        
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+          .container { width: 100% !important; padding: 20px 10px !important; }
+          .main-content { padding: 30px 20px !important; }
+          .hero-title { font-size: 24px !important; line-height: 1.2 !important; }
+          .cta-button { display: block !important; width: 100% !important; margin: 20px 0 !important; }
+          .social-links { text-align: center !important; }
+          .social-links a { margin: 5px !important; }
+          .stats-grid { display: block !important; }
+          .stat-item { display: block !important; margin-bottom: 20px !important; }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+          .email-body { background: #0f0f23 !important; }
+        }
+      </style>
+    </head>
+    <body class="email-body" style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); min-height: 100vh;">
+      <div class="container" style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+        ${content}
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+// Professional Email Header with Logo
+function getEmailHeader() {
+  return `
+    <!-- Email Header -->
+    <div style="text-align: center; margin-bottom: 40px; padding: 20px 0;">
+      <img src="https://learnnect.com/assets/learnnect-logo_gradient.png" alt="Learnnect" style="height: 50px; margin-bottom: 15px; max-width: 200px;" />
+      <p style="color: #00ffff; margin: 0; font-size: 16px; font-weight: 500; letter-spacing: 1px;">Learn, Connect, Succeed</p>
+    </div>
+  `;
+}
+
+// Professional Email Footer with proper icons and branding
 function getEmailFooter() {
   return `
     <!-- Professional Footer -->
-    <div style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); padding: 40px 20px; margin-top: 40px; border-radius: 20px; border: 1px solid rgba(0, 255, 255, 0.1);">
+    <div style="background: #0f0f23; padding: 40px 20px; margin-top: 40px; border-radius: 20px; border: 1px solid #1a1a2e;">
       <!-- Logo and Branding -->
       <div style="text-align: center; margin-bottom: 30px;">
-        <div style="background: linear-gradient(45deg, #ff0080, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 28px; font-weight: bold; margin-bottom: 8px;">
-          Learnnect
-        </div>
+        <img src="https://learnnect.com/assets/learnnect-logo_gradient.png" alt="Learnnect" style="height: 40px; margin-bottom: 10px; max-width: 150px;" />
         <p style="color: #00ffff; margin: 0; font-size: 14px; font-weight: 500;">Learn, Connect, Succeed</p>
       </div>
 
       <!-- Contact Info -->
       <div style="text-align: center; margin-bottom: 25px;">
         <p style="color: #ffffff; margin: 0 0 8px 0; font-size: 14px;">
-          📧 <a href="mailto:support@learnnect.com" style="color: #00ffff; text-decoration: none;">support@learnnect.com</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#00ffff" stroke-width="2" fill="none"/>
+            <polyline points="22,6 12,13 2,6" stroke="#00ffff" stroke-width="2" fill="none"/>
+          </svg>
+          <a href="mailto:support@learnnect.com" style="color: #00ffff; text-decoration: none;">support@learnnect.com</a>
         </p>
         <p style="color: #ffffff; margin: 0 0 8px 0; font-size: 14px;">
-          📞 +91 7007788926 | +91 9319369737 | +91 8709229353
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="#00ffff" stroke-width="2" fill="none"/>
+          </svg>
+          +91 7007788926 | +91 9319369737 | +91 8709229353
         </p>
         <p style="color: #a0a0a0; margin: 0; font-size: 12px;">Available 7 days, 9AM-6PM IST</p>
       </div>
 
-      <!-- Social Links -->
-      <div style="text-align: center; margin-bottom: 25px;">
-        <a href="https://learnnect.com" style="display: inline-block; margin: 0 10px; padding: 8px 16px; background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 8px; color: #00ffff; text-decoration: none; font-size: 12px;">🌐 Website</a>
-        <a href="https://linkedin.com/company/learnnect" style="display: inline-block; margin: 0 10px; padding: 8px 16px; background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 8px; color: #00ffff; text-decoration: none; font-size: 12px;">💼 LinkedIn</a>
-        <a href="https://instagram.com/learnnect" style="display: inline-block; margin: 0 10px; padding: 8px 16px; background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 8px; color: #00ffff; text-decoration: none; font-size: 12px;">📸 Instagram</a>
+      <!-- Social Links with proper icons -->
+      <div class="social-links" style="text-align: center; margin-bottom: 25px;">
+        <a href="https://learnnect.com" style="display: inline-block; margin: 0 8px; padding: 12px; background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 50%; text-decoration: none; transition: all 0.3s ease;" title="Visit Website">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#00ffff" stroke-width="2"/>
+            <line x1="2" y1="12" x2="22" y2="12" stroke="#00ffff" stroke-width="2"/>
+            <path d="m12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" stroke="#00ffff" stroke-width="2"/>
+          </svg>
+        </a>
+        <a href="https://linkedin.com/company/learnnect" style="display: inline-block; margin: 0 8px; padding: 12px; background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 50%; text-decoration: none; transition: all 0.3s ease;" title="LinkedIn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" stroke="#00ffff" stroke-width="2"/>
+            <rect x="2" y="9" width="4" height="12" stroke="#00ffff" stroke-width="2"/>
+            <circle cx="4" cy="4" r="2" stroke="#00ffff" stroke-width="2"/>
+          </svg>
+        </a>
+        <a href="https://instagram.com/learnnect" style="display: inline-block; margin: 0 8px; padding: 12px; background: rgba(0, 255, 255, 0.1); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 50%; text-decoration: none; transition: all 0.3s ease;" title="Instagram">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="#00ffff" stroke-width="2"/>
+            <path d="m16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="#00ffff" stroke-width="2"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="#00ffff" stroke-width="2"/>
+          </svg>
+        </a>
       </div>
 
       <!-- Legal -->
@@ -131,103 +217,119 @@ function getEmailFooter() {
   `;
 }
 
-// OTP Email Template - Professional, Witty, Gen Z-friendly
-function getOTPEmailTemplate(otp, purpose = 'verification') {
-  const purposeText = {
-    'signup': 'Welcome Aboard! 🚀',
-    'login': 'Quick Security Check ✨',
-    'verification': 'Let\'s Verify You\'re You! 🔐'
-  };
-
-  const purposeSubtext = {
-    'signup': 'You\'re one step away from joining the future of learning!',
-    'login': 'Just making sure it\'s really you trying to access your account.',
-    'verification': 'Quick verification to keep your account secure and sound.'
-  };
-
+// Marketing Stats Component
+function getMarketingStats() {
   return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Learnnect - ${purposeText[purpose] || 'Email Verification'}</title>
-      <style>
-        @media only screen and (max-width: 600px) {
-          .container { padding: 20px 10px !important; }
-          .main-content { padding: 30px 20px !important; }
-          .otp-code { font-size: 28px !important; padding: 15px 30px !important; }
-          .social-links a { margin: 5px !important; display: block !important; }
-        }
-      </style>
-    </head>
-    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); min-height: 100vh;">
-      <div class="container" style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-        <!-- Header -->
-        <div style="text-align: center; margin-bottom: 40px;">
-          <div style="background: linear-gradient(45deg, #ff0080, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 36px; font-weight: bold; margin-bottom: 10px;">
-            Learnnect
-          </div>
-          <p style="color: #00ffff; margin: 0; font-size: 16px; font-weight: 500;">Learn, Connect, Succeed</p>
+    <!-- Marketing Stats -->
+    <div style="background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(255, 0, 128, 0.05) 100%); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 15px; padding: 30px; margin: 30px 0;">
+      <h3 style="color: #00ffff; margin: 0 0 20px 0; font-size: 18px; text-align: center; font-weight: 600;">🚀 Why 10,000+ Students Choose Learnnect</h3>
+
+      <div class="stats-grid" style="display: table; width: 100%; margin-bottom: 20px;">
+        <div class="stat-item" style="display: table-cell; text-align: center; padding: 0 15px; border-right: 1px solid rgba(0, 255, 255, 0.2);">
+          <div style="color: #ff0080; font-size: 24px; font-weight: bold; margin-bottom: 5px;">95%</div>
+          <div style="color: #ffffff; font-size: 12px;">Placement Rate</div>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid rgba(0, 255, 255, 0.2); box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);">
-          <h1 style="color: #00ffff; text-align: center; margin-bottom: 15px; font-size: 26px; font-weight: 600;">
-            ${purposeText[purpose] || 'Email Verification'}
-          </h1>
-          
-          <p style="color: #ffffff; font-size: 16px; line-height: 1.6; margin-bottom: 30px; text-align: center;">
-            ${purposeSubtext[purpose] || 'Please verify your email to continue.'}
-          </p>
-
-          <!-- OTP Code -->
-          <div style="text-align: center; margin: 40px 0;">
-            <p style="color: #a0a0a0; font-size: 14px; margin-bottom: 15px;">Your verification code:</p>
-            <div class="otp-code" style="display: inline-block; background: linear-gradient(45deg, #ff0080, #00ffff); padding: 20px 40px; border-radius: 15px; font-size: 32px; font-weight: bold; color: #ffffff; letter-spacing: 8px; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);">
-              ${otp}
-            </div>
-          </div>
-
-          <p style="color: #a0a0a0; font-size: 14px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
-            This code expires in <strong style="color: #00ffff;">10 minutes</strong>. No rush, but don't take a coffee break! ☕
-          </p>
-
-          <!-- Why Learnnect Section -->
-          <div style="background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 15px; padding: 25px; margin: 30px 0;">
-            <h3 style="color: #00ffff; margin: 0 0 15px 0; font-size: 18px; text-align: center;">🎯 Why Choose Learnnect?</h3>
-            <div style="color: #ffffff; font-size: 14px; line-height: 1.6;">
-              <p style="margin: 0 0 10px 0;">✨ <strong>Project-Based Learning:</strong> Real-world projects, not just theory</p>
-              <p style="margin: 0 0 10px 0;">🚀 <strong>3-Phase Curriculum:</strong> Foundations → Core+Advanced → Interview Prep</p>
-              <p style="margin: 0 0 10px 0;">💼 <strong>Career Support:</strong> Resume building, mock interviews, job updates</p>
-              <p style="margin: 0;">🎓 <strong>Dual Certifications:</strong> Learnnect + AICTE certified courses</p>
-            </div>
-          </div>
-
-          <!-- Security Notice -->
-          <div style="background: rgba(255, 0, 128, 0.1); border: 1px solid rgba(255, 0, 128, 0.3); border-radius: 10px; padding: 20px; margin-top: 30px;">
-            <h3 style="color: #ff0080; margin: 0 0 15px 0; font-size: 16px;">🔒 Security First!</h3>
-            <ul style="color: #ffffff; font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
-              <li>Never share this code with anyone (not even your bestie! 👯‍♀️)</li>
-              <li>Learnnect will never ask for this code via phone or email</li>
-              <li>Didn't request this? Just ignore this email and carry on! 😎</li>
-            </ul>
-          </div>
+        <div class="stat-item" style="display: table-cell; text-align: center; padding: 0 15px; border-right: 1px solid rgba(0, 255, 255, 0.2);">
+          <div style="color: #ff0080; font-size: 24px; font-weight: bold; margin-bottom: 5px;">₹8.5L</div>
+          <div style="color: #ffffff; font-size: 12px;">Avg. Package</div>
         </div>
-
-        ${getEmailFooter()}
+        <div class="stat-item" style="display: table-cell; text-align: center; padding: 0 15px;">
+          <div style="color: #ff0080; font-size: 24px; font-weight: bold; margin-bottom: 5px;">500+</div>
+          <div style="color: #ffffff; font-size: 12px;">Hiring Partners</div>
+        </div>
       </div>
-    </body>
-    </html>
+
+      <div style="color: #ffffff; font-size: 14px; line-height: 1.6;">
+        <p style="margin: 0 0 10px 0;">✨ <strong>Project-Based Learning:</strong> Build 15+ real-world projects for your portfolio</p>
+        <p style="margin: 0 0 10px 0;">🎯 <strong>3-Phase Curriculum:</strong> Foundations → Core+Advanced → Interview Prep</p>
+        <p style="margin: 0 0 10px 0;">💼 <strong>Career Support:</strong> Resume building, mock interviews, job referrals</p>
+        <p style="margin: 0;">🎓 <strong>Dual Certifications:</strong> Learnnect + AICTE certified programs</p>
+      </div>
+    </div>
   `;
 }
 
-// Health check endpoint
+// OTP Email Template - World-class design with marketing focus
+function getOTPEmailTemplate(otp, purpose = 'verification') {
+  const purposeConfig = {
+    'signup': {
+      title: 'Welcome to the Future! 🚀',
+      subtitle: 'You\'re one step away from joining 10,000+ successful learners',
+      emoji: '🎉'
+    },
+    'login': {
+      title: 'Quick Security Check ✨',
+      subtitle: 'Just making sure it\'s really you accessing your account',
+      emoji: '🔐'
+    },
+    'verification': {
+      title: 'Let\'s Verify You\'re You! 🔐',
+      subtitle: 'Quick verification to keep your learning journey secure',
+      emoji: '✅'
+    }
+  };
+
+  const config = purposeConfig[purpose] || purposeConfig['verification'];
+
+  const content = `
+    ${getEmailHeader()}
+
+    <!-- Main Content -->
+    <div class="main-content" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid rgba(0, 255, 255, 0.2); box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <div style="font-size: 48px; margin-bottom: 15px;">${config.emoji}</div>
+        <h1 class="hero-title" style="color: #00ffff; margin: 0 0 15px 0; font-size: 28px; font-weight: 700; line-height: 1.3;">
+          ${config.title}
+        </h1>
+        <p style="color: #ffffff; font-size: 16px; line-height: 1.6; margin: 0;">
+          ${config.subtitle}
+        </p>
+      </div>
+
+      <!-- OTP Code Section -->
+      <div style="text-align: center; margin: 40px 0;">
+        <p style="color: #a0a0a0; font-size: 14px; margin-bottom: 15px; font-weight: 500;">Your verification code:</p>
+        <div style="background: linear-gradient(135deg, #ff0080 0%, #00ffff 100%); padding: 3px; border-radius: 15px; display: inline-block; margin-bottom: 20px;">
+          <div style="background: #0f0f23; padding: 20px 40px; border-radius: 12px; font-size: 32px; font-weight: bold; color: #ffffff; letter-spacing: 8px; font-family: 'Courier New', monospace;">
+            ${otp}
+          </div>
+        </div>
+        <p style="color: #a0a0a0; font-size: 14px; margin: 0;">
+          Expires in <strong style="color: #00ffff;">10 minutes</strong> • No rush, but don't grab a coffee! ☕
+        </p>
+      </div>
+
+      ${purpose === 'signup' ? getMarketingStats() : ''}
+
+      <!-- Security Notice -->
+      <div style="background: rgba(255, 0, 128, 0.1); border: 1px solid rgba(255, 0, 128, 0.3); border-radius: 15px; padding: 25px; margin-top: 30px;">
+        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="margin-right: 10px;">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#ff0080" stroke-width="2" fill="none"/>
+            <path d="m9 12 2 2 4-4" stroke="#ff0080" stroke-width="2" fill="none"/>
+          </svg>
+          <h3 style="color: #ff0080; margin: 0; font-size: 16px; font-weight: 600;">Security First!</h3>
+        </div>
+        <ul style="color: #ffffff; font-size: 14px; line-height: 1.6; margin: 0; padding-left: 20px;">
+          <li>Never share this code with anyone (not even your bestie! 👯‍♀️)</li>
+          <li>Learnnect will never ask for this code via phone or email</li>
+          <li>Didn't request this? Just ignore this email and carry on! 😎</li>
+        </ul>
+      </div>
+    </div>
+
+    ${getEmailFooter()}
+  `;
+
+  return getEmailBaseTemplate(content, `Learnnect - ${config.title}`);
+}
+
+// Health check endpoints
 app.get('/', (req, res) => {
   res.json({
     status: 'OK',
-    service: 'Learnnect OTP Backend',
-    version: '1.0.0',
+    service: 'Learnnect Professional Email Backend',
+    version: '2.0.0',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
@@ -236,8 +338,8 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({
     status: 'OK',
-    service: 'Learnnect OTP Backend',
-    version: '1.0.0',
+    service: 'Learnnect Professional Email Backend',
+    version: '2.0.0',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage(),
@@ -248,8 +350,6 @@ app.get('/health', (req, res) => {
     }
   });
 });
-
-// API Routes
 
 // Send OTP Email
 app.post('/api/send-otp', async (req, res) => {
@@ -392,6 +492,14 @@ app.post('/api/verify-otp', async (req, res) => {
   }
 });
 
+// Load professional email templates
+const {
+  getWelcomeEmailTemplate,
+  getContactEmailTemplate,
+  getEnquiryEmailTemplate,
+  getNewsletterEmailTemplate
+} = require('./professional-email-templates');
+
 // Send Confirmation Emails
 app.post('/api/send-confirmation', async (req, res) => {
   try {
@@ -422,213 +530,25 @@ app.post('/api/send-confirmation', async (req, res) => {
       case 'welcome':
         fromName = 'Learnnect - Support Team';
         subject = 'Welcome to the Future of Learning! 🚀';
-        html = `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to Learnnect!</title>
-            <style>
-              @media only screen and (max-width: 600px) {
-                .container { padding: 20px 10px !important; }
-                .main-content { padding: 30px 20px !important; }
-                .cta-button { display: block !important; margin: 20px auto !important; }
-              }
-            </style>
-          </head>
-          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); min-height: 100vh;">
-            <div class="container" style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-              <!-- Header -->
-              <div style="text-align: center; margin-bottom: 40px;">
-                <div style="background: linear-gradient(45deg, #ff0080, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 36px; font-weight: bold; margin-bottom: 10px;">
-                  Learnnect
-                </div>
-                <p style="color: #00ffff; margin: 0; font-size: 16px; font-weight: 500;">Learn, Connect, Succeed</p>
-              </div>
-
-              <!-- Main Content -->
-              <div class="main-content" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid rgba(0, 255, 255, 0.2); box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);">
-                <h1 style="color: #00ffff; text-align: center; margin-bottom: 20px; font-size: 28px; font-weight: 600;">
-                  Welcome to the Squad, ${data?.name || 'Future Learner'}! 🎉
-                </h1>
-
-                <p style="color: #ffffff; font-size: 18px; line-height: 1.6; margin-bottom: 30px; text-align: center;">
-                  You just joined thousands of ambitious learners who are transforming their careers with cutting-edge skills!
-                </p>
-
-                <div style="background: linear-gradient(45deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 255, 0.1)); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 15px; padding: 30px; margin: 30px 0;">
-                  <h2 style="color: #ff0080; margin: 0 0 20px 0; font-size: 20px; text-align: center;">🚀 Your Learning Journey Starts Now!</h2>
-
-                  <div style="color: #ffffff; font-size: 15px; line-height: 1.7;">
-                    <p style="margin: 0 0 15px 0;">🎯 <strong>Project-Based Learning:</strong> Build real-world projects that employers actually want to see</p>
-                    <p style="margin: 0 0 15px 0;">📚 <strong>3-Phase Curriculum:</strong> Foundations → Core+Advanced → Interview Prep (we've got your back!)</p>
-                    <p style="margin: 0 0 15px 0;">💼 <strong>Career Support:</strong> Resume building, mock interviews, and job updates (because landing that dream job is the goal!)</p>
-                    <p style="margin: 0 0 15px 0;">🎓 <strong>Dual Certifications:</strong> Learnnect + AICTE certified (double the credibility!)</p>
-                    <p style="margin: 0;">🤝 <strong>Lifetime Support:</strong> Get placed? We'll support you for life (that's our promise!)</p>
-                  </div>
-                </div>
-
-                <div style="text-align: center; margin: 40px 0;">
-                  <a href="https://learnnect.com/dashboard" class="cta-button" style="display: inline-block; background: linear-gradient(45deg, #ff0080, #00ffff); color: white; padding: 15px 40px; text-decoration: none; border-radius: 25px; font-weight: bold; font-size: 16px; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); transition: all 0.3s ease;">
-                    🚀 Start Learning Now
-                  </a>
-                </div>
-
-                <div style="background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 15px; padding: 25px; margin: 30px 0;">
-                  <h3 style="color: #00ffff; margin: 0 0 15px 0; font-size: 18px; text-align: center;">💡 Pro Tips for Success</h3>
-                  <div style="color: #ffffff; font-size: 14px; line-height: 1.6;">
-                    <p style="margin: 0 0 10px 0;">✨ Set aside dedicated learning time daily (consistency > intensity)</p>
-                    <p style="margin: 0 0 10px 0;">🔥 Join our community discussions (networking = opportunities)</p>
-                    <p style="margin: 0 0 10px 0;">💪 Don't skip the projects (they're your portfolio goldmine)</p>
-                    <p style="margin: 0;">🎯 Track your progress and celebrate small wins!</p>
-                  </div>
-                </div>
-              </div>
-
-              ${getEmailFooter()}
-            </div>
-          </body>
-          </html>
-        `;
+        html = getWelcomeEmailTemplate(data?.name || 'Future Learner');
         break;
 
       case 'contact':
         fromName = 'Learnnect - Support Team';
         subject = 'Thanks for Reaching Out! We\'ve Got You Covered 💬';
-        html = `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Thanks for Contacting Learnnect!</title>
-          </head>
-          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); min-height: 100vh;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-              <div style="text-align: center; margin-bottom: 40px;">
-                <div style="background: linear-gradient(45deg, #ff0080, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 36px; font-weight: bold; margin-bottom: 10px;">Learnnect</div>
-                <p style="color: #00ffff; margin: 0; font-size: 16px; font-weight: 500;">Learn, Connect, Succeed</p>
-              </div>
-
-              <div style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid rgba(0, 255, 255, 0.2);">
-                <h1 style="color: #00ffff; text-align: center; margin-bottom: 20px; font-size: 26px;">Hey ${data?.name || 'there'}! 👋</h1>
-                <p style="color: #ffffff; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 25px;">
-                  Thanks for dropping us a message! We've received it and our team will get back to you within 24 hours (probably sooner, we're pretty quick! ⚡).
-                </p>
-                ${data?.message ? `
-                <div style="background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 10px; padding: 20px; margin: 25px 0;">
-                  <h3 style="color: #00ffff; margin: 0 0 10px 0; font-size: 16px;">📝 Your Message:</h3>
-                  <p style="color: #ffffff; margin: 0; font-style: italic;">"${data.message}"</p>
-                </div>
-                ` : ''}
-                <p style="color: #a0a0a0; font-size: 14px; text-align: center; margin-top: 30px;">
-                  In the meantime, feel free to explore our courses and get a head start on your learning journey! 🚀
-                </p>
-              </div>
-              ${getEmailFooter()}
-            </div>
-          </body>
-          </html>
-        `;
+        html = getContactEmailTemplate(data?.name || 'there', data?.message);
         break;
 
       case 'enquiry':
         fromName = 'Learnnect - Support Team';
         subject = 'Your Course Enquiry - Let\'s Make It Happen! 🎯';
-        html = `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Course Enquiry Received!</title>
-          </head>
-          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); min-height: 100vh;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-              <div style="text-align: center; margin-bottom: 40px;">
-                <div style="background: linear-gradient(45deg, #ff0080, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 36px; font-weight: bold; margin-bottom: 10px;">Learnnect</div>
-                <p style="color: #00ffff; margin: 0; font-size: 16px; font-weight: 500;">Learn, Connect, Succeed</p>
-              </div>
-
-              <div style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid rgba(0, 255, 255, 0.2);">
-                <h1 style="color: #00ffff; text-align: center; margin-bottom: 20px; font-size: 26px;">Awesome Choice, ${data?.name || 'Future Learner'}! 🎉</h1>
-                <p style="color: #ffffff; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 25px;">
-                  Thanks for your interest in ${data?.courseInterest ? `<strong style="color: #ff0080;">${data.courseInterest}</strong>` : 'our courses'}! You're about to embark on an incredible learning journey.
-                </p>
-
-                <div style="background: linear-gradient(45deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 255, 0.1)); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 15px; padding: 25px; margin: 25px 0;">
-                  <h3 style="color: #ff0080; margin: 0 0 15px 0; font-size: 18px; text-align: center;">🚀 What Happens Next?</h3>
-                  <div style="color: #ffffff; font-size: 14px; line-height: 1.6;">
-                    <p style="margin: 0 0 10px 0;">📞 Our course advisor will call you within 2-4 hours</p>
-                    <p style="margin: 0 0 10px 0;">💡 We'll discuss your career goals and learning preferences</p>
-                    <p style="margin: 0 0 10px 0;">🎯 Get a personalized learning roadmap</p>
-                    <p style="margin: 0;">💰 Learn about our current offers and payment options</p>
-                  </div>
-                </div>
-
-                <p style="color: #a0a0a0; font-size: 14px; text-align: center; margin-top: 30px;">
-                  Can't wait? Call us directly at <strong style="color: #00ffff;">+91 7007788926</strong> 📞
-                </p>
-              </div>
-              ${getEmailFooter()}
-            </div>
-          </body>
-          </html>
-        `;
+        html = getEnquiryEmailTemplate(data?.name || 'Future Learner', data?.courseInterest);
         break;
 
       case 'newsletter':
         fromName = 'Learnnect Newsletter';
-        subject = 'Welcome to the Learnnect Newsletter! 📰✨';
-        html = `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Newsletter Subscription Confirmed!</title>
-          </head>
-          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%); min-height: 100vh;">
-            <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-              <div style="text-align: center; margin-bottom: 40px;">
-                <div style="background: linear-gradient(45deg, #ff0080, #00ffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 36px; font-weight: bold; margin-bottom: 10px;">Learnnect</div>
-                <p style="color: #00ffff; margin: 0; font-size: 16px; font-weight: 500;">Learn, Connect, Succeed</p>
-              </div>
-
-              <div style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; border: 1px solid rgba(0, 255, 255, 0.2);">
-                <h1 style="color: #00ffff; text-align: center; margin-bottom: 20px; font-size: 26px;">You're In! Welcome to the Inner Circle 🎉</h1>
-                <p style="color: #ffffff; font-size: 16px; line-height: 1.6; text-align: center; margin-bottom: 30px;">
-                  Hey ${data?.name || 'Learning Enthusiast'}! You just joined our exclusive newsletter community. Get ready for some seriously good content! 🔥
-                </p>
-
-                <div style="background: linear-gradient(45deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 255, 0.1)); border: 1px solid rgba(0, 255, 255, 0.3); border-radius: 15px; padding: 25px; margin: 25px 0;">
-                  <h3 style="color: #ff0080; margin: 0 0 15px 0; font-size: 18px; text-align: center;">📬 What's Coming Your Way?</h3>
-                  <div style="color: #ffffff; font-size: 14px; line-height: 1.6;">
-                    <p style="margin: 0 0 12px 0;">🚀 <strong>Latest Course Updates:</strong> Be the first to know about new courses and features</p>
-                    <p style="margin: 0 0 12px 0;">💡 <strong>Industry Insights:</strong> Trends, tips, and career advice from the tech world</p>
-                    <p style="margin: 0 0 12px 0;">🎁 <strong>Exclusive Offers:</strong> Special discounts and early-bird pricing (subscribers only!)</p>
-                    <p style="margin: 0 0 12px 0;">📚 <strong>Learning Resources:</strong> Free guides, cheat sheets, and project ideas</p>
-                    <p style="margin: 0;">🎯 <strong>Success Stories:</strong> Real stories from learners who landed their dream jobs</p>
-                  </div>
-                </div>
-
-                <div style="background: rgba(0, 255, 255, 0.05); border: 1px solid rgba(0, 255, 255, 0.2); border-radius: 15px; padding: 20px; margin: 25px 0;">
-                  <h3 style="color: #00ffff; margin: 0 0 10px 0; font-size: 16px; text-align: center;">💌 Newsletter Schedule</h3>
-                  <p style="color: #ffffff; margin: 0; font-size: 14px; text-align: center;">
-                    We send out newsletters <strong>twice a week</strong> - just enough to keep you informed without overwhelming your inbox. Quality over quantity, always! ✨
-                  </p>
-                </div>
-
-                <p style="color: #a0a0a0; font-size: 13px; text-align: center; margin-top: 30px;">
-                  Don't want these emails anymore? No hard feelings - you can unsubscribe anytime. But we think you'll love what we have in store! 😉
-                </p>
-              </div>
-              ${getEmailFooter()}
-            </div>
-          </body>
-          </html>
-        `;
+        subject = 'Welcome to the Inner Circle! 📰✨';
+        html = getNewsletterEmailTemplate(data?.name || 'Learning Enthusiast');
         break;
 
       default:
@@ -676,7 +596,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Start server
 app.listen(port, '0.0.0.0', () => {
-  console.log(`🚀 Learnnect OTP Backend running on port ${port}`);
+  console.log(`🚀 Learnnect Professional Email Backend running on port ${port}`);
   console.log(`📧 Resend API configured: ${process.env.RESEND_API_KEY ? 'Yes' : 'No'}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`⏰ Server started at: ${new Date().toISOString()}`);
